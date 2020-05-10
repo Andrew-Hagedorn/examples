@@ -1,7 +1,11 @@
+const nodeExternals = require('webpack-node-externals');
+
 module.exports = {
       target: 'node',
+      externals: [nodeExternals()],
       entry: {
-        index: './index.js'
+        index: './index.js',
+        worker: './worker.js'
       },
       output: {
         filename: '[name].js',

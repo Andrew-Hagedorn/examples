@@ -14,5 +14,4 @@ From there you can run the application using several different methods of render
 
   * `npm run start` 
   
-
 Alternative you can run a performance test by running `sh perf-test.sh`.
