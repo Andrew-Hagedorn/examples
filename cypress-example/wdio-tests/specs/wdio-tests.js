@@ -7,7 +7,7 @@ describe('wdio tests', () => {
         browser.url('/');
     });
 
-    it('should have the right title', () => {
+    it('can open a modal and close it', () => {
         expect(getByDataTest('modal')).not.toBeExisting();
 
         getByDataTest('open-button').click();
@@ -19,7 +19,7 @@ describe('wdio tests', () => {
         expect(getByDataTest('modal')).not.toBeExisting();
     });
 
-    it('should have the right title', () => {
+    it('can navigate through the tabs', () => {
         getByDataTest('second-page-link')
           .click();
         
