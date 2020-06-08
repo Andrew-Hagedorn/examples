@@ -1,0 +1,11 @@
+version: '2.1'
+
+services:
+  localstack:
+    image: localstack/localstack:0.11.0
+    container_name: localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - DEBUG=1 

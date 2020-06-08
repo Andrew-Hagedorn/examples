@@ -4,3 +4,5 @@
 **/dist/*
 **/data/*
 **/package-lock.json
+**/obj/**
+**/bin/**
