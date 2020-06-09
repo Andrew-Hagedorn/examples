@@ -5,7 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LocalStackExamples
+namespace LocalStackExamples.Basic
 {
     [Route("localstack-examples/")]
     [ApiController]

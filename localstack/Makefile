@@ -2,7 +2,7 @@ build:
 	dotnet build
 
 run:
-	dotnet run
+	cd src && dotnet run
 
 setup:
 	docker-compose up -d localstack
