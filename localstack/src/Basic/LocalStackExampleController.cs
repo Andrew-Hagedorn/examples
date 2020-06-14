@@ -13,7 +13,9 @@ namespace LocalStackExamples.Basic
     {
         private readonly IHttpClientFactory _clientFactory;
 
-        public LocalStackExampleController(IHttpClientFactory clientFactory)
+        public LocalStackExampleController(
+            IHttpClientFactory clientFactory
+        )
         {
             _clientFactory = clientFactory;
         }
@@ -25,7 +27,7 @@ namespace LocalStackExamples.Basic
                 .GetAsync("http://localhost:4566");
 
             var contents = await result.Content.ReadAsStringAsync();
-            var deserialized = JsonSerializer.Deserialize<dynamic>(contents);
+            var deserialized = JsonSerializer.Deserialize<LocalStackStatus>(contents);
 
             return Json(new {
                 contents = deserialized,
