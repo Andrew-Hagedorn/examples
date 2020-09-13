@@ -6,29 +6,49 @@
 
 mkdir data || echo 'directory already there'
 
-node index.js &
+npm run start &
 PID=$!
 
-sleep 2
+sleep 5
 
-testWithDelay () {
-   DELAY=$1
+testRendering () {
+   CONCURRENCY=$1
+   URL=$2
    echo "********************************"
-   echo "Running test with delay of $DELAY"
-    ab -n 1000 -c 10 http://localhost:7000/processing?delay=$DELAY > ./data/processing-$DELAY.txt
-    curl http://localhost:7000/save-event-loop-data?file=processing-$DELAY
+   echo "Running test with concurrency of $CONCURRENCY on http://localhost:7000/$URL"
+   ab -n 1000 -c $CONCURRENCY http://localhost:7000/$URL > ./data/processing-$URL-$CONCURRENCY.txt
+   curl http://localhost:7000/save-event-loop-data?file=processing-$URL-$CONCURRENCY
    echo "********************************"
 }
 
+CURRENT_URL=render-to-string
+testRendering 1 $CURRENT_URL
+testRendering 5 $CURRENT_URL
+testRendering 10 $CURRENT_URL
+testRendering 15 $CURRENT_URL
+testRendering 20 $CURRENT_URL
+testRendering 25 $CURRENT_URL
+testRendering 50 $CURRENT_URL
+testRendering 100 $CURRENT_URL
 
-ab -n 10000 -c 10 http://localhost:7000/no-processing > ./data/processing-0.txt
-curl http://localhost:7000/save-event-loop-data?file=processing-0
+CURRENT_URL=render-to-stream
+testRendering 1 $CURRENT_URL
+testRendering 5 $CURRENT_URL
+testRendering 10 $CURRENT_URL
+testRendering 15 $CURRENT_URL
+testRendering 20 $CURRENT_URL
+testRendering 25 $CURRENT_URL
+testRendering 50 $CURRENT_URL
+testRendering 100 $CURRENT_URL
 
-testWithDelay 5
-testWithDelay 10
-testWithDelay 25
-testWithDelay 50
-testWithDelay 100
-testWithDelay 200
+CURRENT_URL=render-in-worker
+testRendering 1 $CURRENT_URL
+testRendering 5 $CURRENT_URL
+testRendering 10 $CURRENT_URL
+testRendering 15 $CURRENT_URL
+testRendering 20 $CURRENT_URL
+testRendering 25 $CURRENT_URL
+testRendering 50 $CURRENT_URL
+testRendering 100 $CURRENT_URL
 
 kill $PID

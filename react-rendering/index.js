@@ -4,38 +4,37 @@ const { trackEventLoopDelay, saveEventLoopResults } = require('../measure-event-
 const Component = require('./component');
 const { Worker } = require('worker_threads');
 const express = require('express')
-
+const { StaticPool } = require('node-worker-threads-pool');
 const app = express()
 const port = 7000;
 const workerFileName = process.cwd() + '/dist/worker.js';
 
 trackEventLoopDelay();
 
+const data = [...Array(1000).keys()];
+
 app.get('/render-to-string', (req, res) => {
-    const count = parseInt(req.query.count, 0) || 100;
-    const data = [...Array(count).keys()];
     const html = Dom.renderToString(<Component data={data} />);
     res.send(html)
 });
 
 app.get('/render-to-stream', (req, res) => {
-    const count = parseInt(req.query.count, 0) || 100;
-    const data = [...Array(count).keys()];
     const stream = Dom.renderToNodeStream(<Component data={data} />);
     stream.on('error', e => {  /* handle the error */ });
     stream.pipe(res);
 });
 
-app.get('/render-in-worker', (req, res) => {
-    const count = parseInt(req.query.count, 0) || 100;
-    const data = [...Array(count).keys()];
-    
-    // in practice use a thread pool
-    const worker = new Worker(workerFileName);
-    worker.postMessage(data)
+const pool = new StaticPool({
+    size: 10,
+    task: process.cwd() + '/dist/worker.js',
+    workerData: '',
+    shareEnv: true,
+});
 
-    worker.on('message', html => res.send(html));
-    worker.on('error', err => res.send(err));
+app.get('/render-in-worker', (req, res) => {
+    pool.exec({
+        data
+    }).then(result => res.send(result));
 });
 
 app.get('/save-event-loop-data', (req, res) => {
